@@ -1,6 +1,10 @@
-export const API_BASE_URL = "";
-export const API_URL = "/api";
-export const STORAGE_URL = "/storage";
+export const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL || ""
+).replace(/\/$/, "");
+export const API_URL = API_BASE_URL ? `${API_BASE_URL}/api` : "/api";
+export const STORAGE_URL = API_BASE_URL
+  ? `${API_BASE_URL}/storage`
+  : "/storage";
 
 export function isNetworkError(error) {
   return !error?.response && Boolean(error?.message);
