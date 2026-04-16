@@ -969,7 +969,9 @@ export default function Shop({
           </div>
         </motion.header>
 
-        {message && <div style={styles.messageBox}>{message}</div>}
+        {(catalogError || message) && (
+          <div style={styles.messageBox}>{catalogError || message}</div>
+        )}
 
         {showAccountPage && customerSession && (
           <section
