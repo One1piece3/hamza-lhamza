@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://hamza-lhamza.great-site.net/api/:path*"
+      "destination": "https://hamza-lhamza-backend-production.up.railway.app/api/:path*"
     },
     {
       "source": "/storage/:path*",
-      "destination": "https://hamza-lhamza.great-site.net/storage/:path*"
+      "destination": "https://hamza-lhamza-backend-production.up.railway.app/storage/:path*"
     }
   ]
 }
