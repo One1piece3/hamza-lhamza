@@ -251,6 +251,7 @@ export default function Shop({
       setCatalogError("");
       const response = await axios.get(PRODUCTS_API_URL);
       setProducts(response.data);
+      setMessage("");
     } catch (error) {
       console.error("Erreur chargement produits :", error);
       const nextMessage = getApiErrorMessage(error, "Erreur lors du chargement des produits");
