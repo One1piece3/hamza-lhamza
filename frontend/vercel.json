@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://hamza-lhamza.great-site.net/api/:path*"
+    },
+    {
+      "source": "/storage/:path*",
+      "destination": "https://hamza-lhamza.great-site.net/storage/:path*"
+    }
+  ]
+}
