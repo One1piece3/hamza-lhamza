@@ -248,6 +248,7 @@ export default function Shop({
   const fetchProducts = async () => {
     try {
       setLoading(true);
+      setMessage("");
       setCatalogError("");
       const response = await axios.get(PRODUCTS_API_URL);
       setProducts(response.data);
