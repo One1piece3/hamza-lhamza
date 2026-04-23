@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { getAdminAuthHeaders } from "./adminSession";
-import { API_URL, STORAGE_URL, getApiErrorMessage } from "./api";
+import { API_URL, getApiErrorMessage, getStorageUrl } from "./api";
 
 const PRODUCTS_API_URL = `${API_URL}/products`;
 const ORDERS_API_URL = `${API_URL}/orders`;
@@ -450,7 +450,7 @@ export default function AdminPanel({ onLogout, onGoToShop, onSessionExpired }) {
     if (!product.images || product.images.length === 0) return null;
     const currentIndex = indexMap[product.id] || 0;
     const safeIndex = Math.min(currentIndex, product.images.length - 1);
-    return `${STORAGE_URL}/${product.images[safeIndex].image_path}`;
+    return getStorageUrl(product.images[safeIndex].image_path);
   };
 
   const nextImage = (productId, imagesLength) => {
@@ -1494,7 +1494,7 @@ export default function AdminPanel({ onLogout, onGoToShop, onSessionExpired }) {
                 {selectedProduct.images && selectedProduct.images.length > 0 ? (
                   <div style={styles.detailImageWrapper}>
                     <img
-                      src={`${STORAGE_URL}/${selectedProduct.images[detailImageIndex].image_path}`}
+                      src={getStorageUrl(selectedProduct.images[detailImageIndex].image_path)}
                       alt={selectedProduct.name}
                       style={styles.detailImage}
                     />

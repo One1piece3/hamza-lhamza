@@ -22,7 +22,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { API_URL, STORAGE_URL, getApiErrorMessage } from "./api";
+import { API_URL, getApiErrorMessage, getStorageUrl } from "./api";
 
 const PRODUCTS_API_URL = `${API_URL}/products`;
 const ORDERS_API_URL = `${API_URL}/orders`;
@@ -365,7 +365,7 @@ export default function Shop({
   const getImageUrl = (product, imageIndex = 0) => {
     if (!product.images || product.images.length === 0) return null;
     const safeIndex = Math.min(imageIndex, product.images.length - 1);
-    return `${STORAGE_URL}/${product.images[safeIndex].image_path}`;
+    return getStorageUrl(product.images[safeIndex].image_path);
   };
 
   const nextCardImage = (productId, imagesLength) => {
@@ -521,7 +521,7 @@ export default function Shop({
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const deliveryFee = cartSubtotal > 0 && cartSubtotal < 500 ? 30 : 0;
+  const deliveryFee = 0;
   const cartTotal = cartSubtotal + deliveryFee;
 
   const validateCheckout = () => {
@@ -1484,7 +1484,7 @@ export default function Shop({
                       }}
                     >
                       <img
-                        src={`${STORAGE_URL}/${selectedProduct.images[detailImageIndex].image_path}`}
+                        src={getStorageUrl(selectedProduct.images[detailImageIndex].image_path)}
                         alt={selectedProduct.name}
                         style={styles.detailImage}
                       />

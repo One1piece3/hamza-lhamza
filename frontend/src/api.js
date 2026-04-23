@@ -6,6 +6,20 @@ export const STORAGE_URL = API_BASE_URL
   ? `${API_BASE_URL}/storage`
   : "/storage";
 
+export function getStorageUrl(path) {
+  if (!path) return "";
+
+  const value = String(path).trim();
+  if (!value) return "";
+
+  if (/^(https?:|data:|blob:)/i.test(value)) {
+    return value;
+  }
+
+  const cleanPath = value.replace(/^\/+/, "").replace(/^storage\/+/i, "");
+  return `${STORAGE_URL}/${cleanPath}`;
+}
+
 export function isNetworkError(error) {
   return !error?.response && Boolean(error?.message);
 }

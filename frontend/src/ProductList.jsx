@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { API_URL, STORAGE_URL } from "./api";
+import { API_URL, getStorageUrl } from "./api";
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
@@ -30,7 +30,7 @@ export default function ProductList() {
             <div key={product.id} style={styles.card}>
               {mainImage && (
                 <img
-                  src={`${STORAGE_URL}/${mainImage.image_path}`}
+                  src={getStorageUrl(mainImage.image_path)}
                   alt={product.name}
                   style={styles.image}
                 />
