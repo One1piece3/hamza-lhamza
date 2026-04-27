@@ -5,10 +5,43 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
+    protected function mediaRoot(): string
+    {
+        return public_path('media');
+    }
+
+    protected function storeUploadedImage($image): string
+    {
+        $directory = $this->mediaRoot() . DIRECTORY_SEPARATOR . 'products';
+
+        if (!is_dir($directory)) {
+            mkdir($directory, 0775, true);
+        }
+
+        $extension = strtolower($image->getClientOriginalExtension() ?: $image->extension() ?: 'jpg');
+        $filename = Str::random(40) . '.' . $extension;
+        $image->move($directory, $filename);
+
+        return 'products/' . $filename;
+    }
+
+    protected function deleteStoredImage(?string $path): void
+    {
+        if (!$path) {
+            return;
+        }
+
+        $fullPath = $this->mediaRoot() . DIRECTORY_SEPARATOR . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+
+        if (is_file($fullPath)) {
+            @unlink($fullPath);
+        }
+    }
+
     protected function normalizeImagesInput(Request $request): void
     {
         if (!$request->hasFile('images') && $request->hasFile('images[]')) {
@@ -58,16 +91,14 @@ class ProductController extends Controller
 
         if ($request->hasFile('images')) {
             foreach ($product->images as $oldImage) {
-                if ($oldImage->image_path) {
-                    Storage::disk('public')->delete($oldImage->image_path);
-                }
+                $this->deleteStoredImage($oldImage->image_path);
             }
 
             $product->images()->delete();
             $mainImageIndex = (int) ($validated['image_main_index'] ?? 0);
 
             foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products', 'public');
+                $path = $this->storeUploadedImage($image);
 
                 $product->images()->create([
                     'image_path' => $path,
@@ -101,7 +132,7 @@ class ProductController extends Controller
         $mainImageIndex = (int) ($validated['image_main_index'] ?? 0);
 
         foreach ($request->file('images', []) as $index => $image) {
-            $path = $image->store('products', 'public');
+            $path = $this->storeUploadedImage($image);
 
             $product->images()->create([
                 'image_path' => $path,
@@ -125,9 +156,7 @@ class ProductController extends Controller
         $product = Product::with('images')->findOrFail($id);
 
         foreach ($product->images as $image) {
-            if ($image->image_path) {
-                Storage::disk('public')->delete($image->image_path);
-            }
+            $this->deleteStoredImage($image->image_path);
         }
 
         $product->images()->delete();
