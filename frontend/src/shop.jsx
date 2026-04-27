@@ -245,6 +245,19 @@ export default function Shop({
     fetchCustomerOrders(customerSession);
   }, [customerSession]);
 
+  useEffect(() => {
+    if (customerSession) {
+      return;
+    }
+
+    setShowAccountPage(false);
+    setLastPlacedOrder(null);
+
+    if (checkoutStep !== "cart") {
+      setCheckoutStep("cart");
+    }
+  }, [customerSession, checkoutStep]);
+
   const fetchProducts = async () => {
     try {
       setLoading(true);
