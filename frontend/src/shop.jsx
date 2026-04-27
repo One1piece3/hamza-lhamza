@@ -402,6 +402,7 @@ export default function Shop({
     }
 
     setCheckoutStep("cart");
+    setIsCartOpen(true);
     setCartItems((prev) => {
       const existing = prev.find((item) => item.id === product.id);
       if (existing) {
@@ -807,19 +808,25 @@ export default function Shop({
           animate={{ opacity: 1, y: 0 }}
           style={{
             ...styles.header,
-            ...(isMobile ? { padding: "16px", borderRadius: "22px" } : {}),
+            ...(isMobile
+              ? {
+                  padding: "14px 14px 18px",
+                  borderRadius: "26px",
+                }
+              : {}),
           }}
         >
           <div
             style={{
               ...styles.topBar,
               ...(isTablet ? { flexDirection: "column", alignItems: "stretch" } : {}),
+              ...(isMobile ? { gap: "14px" } : {}),
             }}
           >
             <div
               style={{
                 ...styles.brandBlock,
-                ...(isMobile ? { alignItems: "flex-start" } : {}),
+                ...(isMobile ? { alignItems: "flex-start", gap: "14px" } : {}),
               }}
             >
               <img
@@ -827,19 +834,28 @@ export default function Shop({
                 alt="Hamza Lhamza"
                 style={{
                   ...styles.logo,
-                  ...(isMobile ? { width: "68px", height: "68px", borderRadius: "18px" } : {}),
+                  ...(isMobile ? { width: "74px", height: "74px", borderRadius: "20px" } : {}),
                 }}
               />
               <div>
                 <h1
                   style={{
                     ...styles.brandTitle,
-                    ...(isMobile ? { fontSize: "24px" } : isTablet ? { fontSize: "28px" } : {}),
+                    ...(isMobile
+                      ? { fontSize: "22px", lineHeight: 1.08 }
+                      : isTablet
+                      ? { fontSize: "28px" }
+                      : {}),
                   }}
                 >
                   Hamza Lhamza
                 </h1>
-                <p style={styles.brandSubtitle}>
+                <p
+                  style={{
+                    ...styles.brandSubtitle,
+                    ...(isMobile ? { fontSize: "14px", lineHeight: 1.55 } : {}),
+                  }}
+                >
                   Denim, silhouettes essentielles et finitions pensees pour une allure sobre et premium.
                 </p>
               </div>
@@ -848,7 +864,14 @@ export default function Shop({
                 <div
                   style={{
                     ...styles.userBadge,
-                    ...(isMobile ? { width: "100%", justifyContent: "center" } : {}),
+                    ...(isMobile
+                      ? {
+                          width: "100%",
+                          justifyContent: "flex-start",
+                          padding: "12px 14px",
+                          borderRadius: "20px",
+                        }
+                      : {}),
                   }}
                 >
                   <div style={styles.userBadgeIcon}>
@@ -866,6 +889,15 @@ export default function Shop({
               style={{
                 ...styles.navLinks,
                 ...(isTablet ? { justifyContent: "center" } : {}),
+                ...(isMobile
+                  ? {
+                      justifyContent: "flex-start",
+                      flexWrap: "nowrap",
+                      overflowX: "auto",
+                      paddingBottom: "4px",
+                      gap: "8px",
+                    }
+                  : {}),
               }}
             >
               <button type="button" style={styles.navLink}>
@@ -886,10 +918,22 @@ export default function Shop({
               style={{
                 ...styles.headerActions,
                 ...(isTablet ? { width: "100%", justifyContent: "space-between" } : {}),
-                ...(isMobile ? { flexDirection: "column", alignItems: "stretch" } : {}),
+                ...(isMobile
+                  ? {
+                      flexDirection: "column",
+                      alignItems: "stretch",
+                      gap: "12px",
+                      width: "100%",
+                    }
+                  : {}),
               }}
             >
-              <div style={styles.searchWrap}>
+              <div
+                style={{
+                  ...styles.searchWrap,
+                  ...(isMobile ? { width: "100%" } : {}),
+                }}
+              >
                 <Search size={16} style={styles.searchIcon} />
                 <input
                   type="text"
@@ -899,6 +943,12 @@ export default function Shop({
                   style={{
                     ...styles.searchInput,
                     ...(isTablet ? { width: "100%" } : {}),
+                    ...(isMobile
+                      ? {
+                          padding: "12px 14px 12px 40px",
+                          borderRadius: "18px",
+                        }
+                      : {}),
                   }}
                 />
               </div>
@@ -907,7 +957,14 @@ export default function Shop({
                 <div
                   style={{
                     ...styles.authButtons,
-                    ...(isMobile ? { width: "100%" } : {}),
+                    ...(isMobile
+                      ? {
+                          width: "100%",
+                          display: "grid",
+                          gridTemplateColumns: "1fr 1fr",
+                          gap: "10px",
+                        }
+                      : {}),
                   }}
                 >
                   <button type="button" style={styles.navGhostButton} onClick={onOpenLogin}>
@@ -924,7 +981,13 @@ export default function Shop({
                   type="button"
                   style={{
                     ...styles.ordersButton,
-                    ...(isMobile ? { width: "100%", justifyContent: "center" } : {}),
+                    ...(isMobile
+                      ? {
+                          width: "100%",
+                          justifyContent: "center",
+                          minHeight: "48px",
+                        }
+                      : {}),
                   }}
                   onClick={() => {
                     setShowAccountPage(true);
@@ -941,7 +1004,13 @@ export default function Shop({
               <button
                 style={{
                   ...styles.cartButton,
-                  ...(isMobile ? { width: "100%", justifyContent: "center" } : {}),
+                  ...(isMobile
+                    ? {
+                        width: "100%",
+                        justifyContent: "center",
+                        minHeight: "52px",
+                      }
+                    : {}),
                 }}
                 onClick={() => {
                   setCheckoutStep("cart");
@@ -958,7 +1027,13 @@ export default function Shop({
                   type="button"
                   style={{
                     ...styles.logoutButton,
-                    ...(isMobile ? { width: "100%", justifyContent: "center" } : {}),
+                    ...(isMobile
+                      ? {
+                          width: "100%",
+                          justifyContent: "center",
+                          minHeight: "48px",
+                        }
+                      : {}),
                   }}
                   onClick={onCustomerLogout}
                 >
@@ -1092,19 +1167,25 @@ export default function Shop({
             <div
               style={{
                 ...styles.heroActionRow,
-                ...(isMobile ? { justifyContent: "center" } : {}),
+                ...(isMobile ? { justifyContent: "stretch", flexDirection: "column" } : {}),
               }}
             >
               <button
                 type="button"
-                style={styles.heroPrimaryButton}
+                style={{
+                  ...styles.heroPrimaryButton,
+                  ...(isMobile ? { width: "100%", minWidth: "100%" } : {}),
+                }}
                 onClick={() => setIsCartOpen(true)}
               >
                 Voir mon panier
               </button>
               <button
                 type="button"
-                style={styles.heroSecondaryButton}
+                style={{
+                  ...styles.heroSecondaryButton,
+                  ...(isMobile ? { width: "100%", minWidth: "100%" } : {}),
+                }}
                 onClick={() => setActiveInfoPage("contact")}
               >
                 Contacter la boutique
@@ -1250,13 +1331,13 @@ export default function Shop({
           <div style={styles.loadingBox}>Aucun produit trouve.</div>
         ) : (
           <section
-            style={{
-              ...styles.productsGrid,
-              ...(isMobile
-                ? { gridTemplateColumns: "1fr" }
-                : isTablet
-                ? { gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }
-                : isCompactCatalog
+          style={{
+            ...styles.productsGrid,
+            ...(isMobile
+              ? { gridTemplateColumns: "1fr", justifyItems: "center" }
+              : isTablet
+              ? { gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }
+              : isCompactCatalog
                 ? styles.productsGridCompact
                 : {}),
             }}
@@ -1270,12 +1351,15 @@ export default function Shop({
                 <motion.article
                   key={product.id}
                   whileHover={{ y: -6 }}
-                  style={styles.productCard}
+                  style={{
+                    ...styles.productCard,
+                    ...(isMobile ? { width: "100%", maxWidth: "420px" } : {}),
+                  }}
                 >
                   <div
                     style={{
                       ...styles.productImageWrap,
-                      ...(isMobile ? { height: "320px" } : {}),
+                      ...(isMobile ? { height: "280px" } : {}),
                     }}
                   >
                     {imageUrl ? (
@@ -1416,7 +1500,10 @@ export default function Shop({
               initial={{ y: 20, opacity: 0, scale: 0.98 }}
               animate={{ y: 0, opacity: 1, scale: 1 }}
               exit={{ y: 20, opacity: 0, scale: 0.98 }}
-              style={{ ...styles.infoModal, ...(isMobile ? { padding: "18px" } : {}) }}
+              style={{
+                ...styles.infoModal,
+                ...(isMobile ? { padding: "18px", maxWidth: "calc(100vw - 16px)", maxHeight: "calc(100vh - 16px)", overflowY: "auto" } : {}),
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               <button type="button" style={styles.closeButton} onClick={() => setActiveInfoPage(null)}>
@@ -1461,7 +1548,15 @@ export default function Shop({
               exit={{ opacity: 0, y: 20, scale: 0.98 }}
               style={{
                 ...styles.modalBox,
-                ...(isMobile ? { padding: "16px", borderRadius: "18px" } : {}),
+                ...(isMobile
+                  ? {
+                      padding: "16px",
+                      borderRadius: "18px",
+                      maxWidth: "calc(100vw - 16px)",
+                      maxHeight: "calc(100vh - 16px)",
+                      overflowY: "auto",
+                    }
+                  : {}),
               }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -1592,12 +1687,11 @@ export default function Shop({
                         ...styles.goldButtonLarge,
                         ...(selectedProduct.stock === 0 ? styles.disabledButton : {}),
                       }}
-                      onClick={() => {
-                        addToCart(selectedProduct, quantity);
-                        setIsCartOpen(true);
-                      }}
-                      disabled={selectedProduct.stock === 0}
-                    >
+                        onClick={() => {
+                          addToCart(selectedProduct, quantity);
+                        }}
+                        disabled={selectedProduct.stock === 0}
+                      >
                       <ShoppingCart size={18} /> Ajouter au panier
                     </button>
                   </div>
@@ -1624,7 +1718,13 @@ export default function Shop({
               transition={{ type: "spring", stiffness: 260, damping: 28 }}
               style={{
                 ...styles.cartDrawer,
-                ...(isMobile ? { maxWidth: "100%", padding: "16px" } : {}),
+                ...(isMobile
+                  ? {
+                      maxWidth: "100%",
+                      borderLeft: "none",
+                      padding: "18px 16px 16px",
+                    }
+                  : {}),
               }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -1659,30 +1759,55 @@ export default function Shop({
                           key={item.id}
                           style={{
                             ...styles.cartItem,
-                            ...(isMobile ? { flexDirection: "column" } : {}),
+                            ...(isMobile
+                              ? {
+                                  gap: "10px",
+                                  padding: "10px",
+                                  borderRadius: "18px",
+                                  alignItems: "flex-start",
+                                }
+                              : {}),
                           }}
                         >
                           <img
                             src={item.image || "/logo.png"}
                             alt={item.name}
-                            style={styles.cartItemImage}
+                            style={{
+                              ...styles.cartItemImage,
+                              ...(isMobile ? { width: "84px", height: "84px", flexShrink: 0 } : {}),
+                            }}
                           />
 
                           <div style={styles.cartItemBody}>
-                            <div style={styles.cartItemTop}>
+                            <div
+                              style={{
+                                ...styles.cartItemTop,
+                                ...(isMobile ? { flexDirection: "column", gap: "8px" } : {}),
+                              }}
+                            >
                               <div>
                                 <h4 style={styles.cartItemTitle}>{item.name}</h4>
                                 <p style={styles.cartItemMeta}>
                                   Taille : {item.size} | Couleur : {item.color}
                                 </p>
                               </div>
-                              <div style={styles.cartItemPriceBlock}>
+                              <div
+                                style={{
+                                  ...styles.cartItemPriceBlock,
+                                  ...(isMobile ? { alignItems: "flex-start" } : {}),
+                                }}
+                              >
                                 <p style={styles.cartItemPrice}>{formatPrice(item.price)}</p>
                                 <p style={styles.cartItemUnitLabel}>par piece</p>
                               </div>
                             </div>
 
-                            <div style={styles.cartItemBottom}>
+                            <div
+                              style={{
+                                ...styles.cartItemBottom,
+                                ...(isMobile ? { flexDirection: "column", alignItems: "stretch" } : {}),
+                              }}
+                            >
                               <div style={styles.cartQuantityGroup}>
                                 <button
                                   type="button"
