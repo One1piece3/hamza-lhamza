@@ -11,6 +11,16 @@ class ProductController extends Controller
 {
     protected function mediaRoot(): string
     {
+        $configuredRoot = trim((string) env('MEDIA_ROOT', env('FILESYSTEM_PUBLIC_ROOT', '')));
+
+        if ($configuredRoot !== '') {
+            return rtrim($configuredRoot, "\\/");
+        }
+
+        if (is_dir('/data') || str_starts_with(PHP_OS_FAMILY, 'Linux')) {
+            return '/data/media';
+        }
+
         return public_path('media');
     }
 
