@@ -20,9 +20,12 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
+        $name = trim($data['name']);
+        $email = strtolower(trim($data['email']));
+
         $user = User::create([
-            'name' => trim($data['name']),
-            'email' => strtolower($data['email']),
+            'name' => $name,
+            'email' => $email,
             'password' => $data['password'],
             'is_admin' => false,
         ]);
@@ -46,7 +49,7 @@ class AuthController extends Controller
             'remember' => 'nullable|boolean',
         ]);
 
-        $email = strtolower($data['email']);
+        $email = strtolower(trim($data['email']));
         $user = User::where('email', $email)->first();
 
         if (!$user || !Hash::check($data['password'], $user->password)) {
@@ -106,7 +109,7 @@ class AuthController extends Controller
         ]);
 
         $status = Password::sendResetLink([
-            'email' => strtolower($data['email']),
+            'email' => strtolower(trim($data['email'])),
         ]);
 
         if ($status !== Password::RESET_LINK_SENT) {
@@ -131,7 +134,7 @@ class AuthController extends Controller
         $status = Password::reset(
             [
                 ...$data,
-                'email' => strtolower($data['email']),
+                'email' => strtolower(trim($data['email'])),
             ],
             function (User $user, string $password) {
                 $user->forceFill([

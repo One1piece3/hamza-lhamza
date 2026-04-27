@@ -20,7 +20,7 @@ class AdminTokenMiddleware
         $userId = AdminTokenStore::get($token);
 
         if (!$userId) {
-            return response()->json(['message' => 'Session admin invalide ou expirée'], 401);
+            return response()->json(['message' => 'Session admin invalide ou expiree'], 401);
         }
 
         $request->attributes->set('admin_token', $token);
