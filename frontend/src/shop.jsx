@@ -584,6 +584,10 @@ export default function Shop({
   };
 
   const handleCheckout = () => {
+    if (placingOrder) {
+      return;
+    }
+
     if (cartItems.length === 0) {
       setMessage("Ajoutez au moins un article avant de commander.");
       setTimeout(() => setMessage(""), 1800);
@@ -602,6 +606,10 @@ export default function Shop({
   };
 
   const handlePlaceOrder = async () => {
+    if (placingOrder) {
+      return;
+    }
+
     if (!customerSession) {
       setCheckoutStep("cart");
       setPlacingOrder(false);
@@ -615,6 +623,7 @@ export default function Shop({
 
     try {
       setPlacingOrder(true);
+      setLastPlacedOrder(null);
       const response = await axios.post(ORDERS_API_URL, {
         customer_user_id: customerSession?.id ?? null,
         customer_email: customerSession?.email ?? null,

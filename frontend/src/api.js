@@ -27,12 +27,31 @@ export function isNetworkError(error) {
   return !error?.response && Boolean(error?.message);
 }
 
+function getFirstValidationError(error) {
+  const errors = error?.response?.data?.errors;
+
+  if (!errors || typeof errors !== "object") {
+    return "";
+  }
+
+  for (const value of Object.values(errors)) {
+    if (Array.isArray(value) && value[0]) {
+      return String(value[0]);
+    }
+  }
+
+  return "";
+}
+
 export function getApiErrorMessage(error, fallbackMessage) {
   if (isNetworkError(error)) {
     return "Le serveur est indisponible pour le moment. Verifiez que le backend est lance puis reessayez.";
   }
 
+  const validationMessage = getFirstValidationError(error);
+
   return (
+    validationMessage ||
     error?.response?.data?.message ||
     fallbackMessage ||
     "Une erreur est survenue. Merci de reessayer."
