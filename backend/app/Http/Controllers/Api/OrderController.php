@@ -173,19 +173,21 @@ class OrderController extends Controller
         ]);
 
         $orders = Order::query()
-            ->when(
-                !empty($data['user_id']),
-                fn ($query) => $query->where('customer_user_id', $data['user_id']),
-                fn ($query) => $query->where('customer_email', $data['email'])
-            )
-            ->when(
-                !empty($data['name']),
-                fn ($query) => $query->orWhere(function ($fallbackQuery) use ($data) {
-                    $fallbackQuery
-                        ->whereNull('customer_email')
-                        ->where('customer_name', $data['name']);
-                })
-            )
+            ->where(function ($query) use ($data) {
+                if (!empty($data['user_id'])) {
+                    $query->where('customer_user_id', $data['user_id']);
+                } else {
+                    $query->where('customer_email', $data['email']);
+                }
+
+                if (!empty($data['name'])) {
+                    $query->orWhere(function ($fallbackQuery) use ($data) {
+                        $fallbackQuery
+                            ->whereNull('customer_email')
+                            ->where('customer_name', $data['name']);
+                    });
+                }
+            })
             ->latest()
             ->get();
 
