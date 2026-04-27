@@ -21,11 +21,6 @@ class OrderController extends Controller
         protected BrevoTransactionalMailer $transactionalMailer
     ) {}
 
-    protected function shouldSendOrderCreateNotifications(): bool
-    {
-        return filter_var((string) env('SEND_ORDER_CREATE_NOTIFICATIONS', 'false'), FILTER_VALIDATE_BOOLEAN);
-    }
-
     protected function sendCustomerOrderNotification(Order $order, string $notificationType): ?string
     {
         if (empty($order->customer_email)) {
@@ -260,11 +255,6 @@ class OrderController extends Controller
             'reference' => 'CMD-' . now()->format('Ymd') . '-' . strtoupper(substr(uniqid(), -6)),
             'status' => 'pending',
         ]);
-
-        if ($this->shouldSendOrderCreateNotifications()) {
-            $this->queueCustomerOrderNotificationAfterResponse($order, 'created');
-            $this->queueAdminOrderNotificationAfterResponse($order);
-        }
 
         return response()->json([
             'message' => 'Commande enregistree avec succes',
