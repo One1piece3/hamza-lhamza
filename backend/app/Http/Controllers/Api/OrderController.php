@@ -256,6 +256,9 @@ class OrderController extends Controller
             'status' => 'pending',
         ]);
 
+        $this->queueCustomerOrderNotificationAfterResponse($order, 'created');
+        $this->queueAdminOrderNotificationAfterResponse($order);
+
         return response()->json([
             'message' => 'Commande enregistree avec succes',
             'order' => $order,
