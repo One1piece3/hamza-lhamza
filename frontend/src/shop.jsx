@@ -528,6 +528,9 @@ export default function Shop({
   };
 
   const PHONE_REGEX = /^[0-9+\s()-]{8,20}$/;
+  const activeCheckoutStep = !customerSession && checkoutStep !== "success"
+    ? "cart"
+    : checkoutStep;
 
   const formatPrice = (value) => `${Number(value).toFixed(2)} DH`;
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -1759,10 +1762,10 @@ export default function Shop({
                 <div>
                   <h3 style={styles.cartTitle}>Votre panier</h3>
                   <p style={styles.cartHeaderText}>
-                    {checkoutStep === "cart" && "Verifiez vos articles avant de continuer."}
-                    {checkoutStep === "checkout" &&
+                    {activeCheckoutStep === "cart" && "Verifiez vos articles avant de continuer."}
+                    {activeCheckoutStep === "checkout" &&
                       "Ajoutez vos coordonnees pour preparer la commande."}
-                    {checkoutStep === "success" &&
+                    {activeCheckoutStep === "success" &&
                       "Votre recapitulatif est pret a etre envoye au vendeur."}
                   </p>
                 </div>
@@ -1779,7 +1782,7 @@ export default function Shop({
                 <div style={styles.emptyCartBox}>Votre panier est vide.</div>
               ) : (
                 <>
-                  {(checkoutStep === "cart" || checkoutStep === "checkout") && (
+                  {(activeCheckoutStep === "cart" || activeCheckoutStep === "checkout") && (
                     <div style={styles.cartItemsWrap}>
                       {cartItems.map((item) => (
                         <div
@@ -1874,7 +1877,7 @@ export default function Shop({
                     </div>
                   )}
 
-                  {checkoutStep === "checkout" && (
+                  {activeCheckoutStep === "checkout" && (
                     <div style={styles.checkoutForm}>
                       <div style={styles.checkoutSavedHint}>
                         Vos informations de commande sont sauvegardees automatiquement sur cet appareil.
@@ -1980,7 +1983,7 @@ export default function Shop({
                     </div>
                   )}
 
-                  {checkoutStep === "success" && (
+                  {activeCheckoutStep === "success" && (
                     <div style={styles.successBox}>
                       <div style={styles.successBadge}>
                         <CheckCircle2 size={22} />
@@ -2017,7 +2020,7 @@ export default function Shop({
                       </div>
                     </div>
 
-                    {checkoutStep === "cart" && (
+                    {activeCheckoutStep === "cart" && (
                       <div style={styles.cartFooterActions}>
                         <button
                           type="button"
@@ -2036,7 +2039,7 @@ export default function Shop({
                       </div>
                     )}
 
-                    {checkoutStep === "checkout" && (
+                    {activeCheckoutStep === "checkout" && (
                       <div style={styles.cartFooterActions}>
                         <button
                           type="button"
@@ -2056,7 +2059,7 @@ export default function Shop({
                       </div>
                     )}
 
-                    {checkoutStep === "success" && (
+                    {activeCheckoutStep === "success" && (
                       <div style={styles.cartFooterActions}>
                         <button
                           type="button"
