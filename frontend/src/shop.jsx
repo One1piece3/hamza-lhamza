@@ -141,18 +141,7 @@ export default function Shop({
       return false;
     }
   });
-  const [checkoutStep, setCheckoutStep] = useState(() => {
-    try {
-      const savedUi = localStorage.getItem(UI_STORAGE_KEY);
-      if (!savedUi) return "cart";
-      const parsedUi = JSON.parse(savedUi);
-      return ["cart", "checkout", "success"].includes(parsedUi.checkoutStep)
-        ? parsedUi.checkoutStep
-        : "cart";
-    } catch {
-      return "cart";
-    }
-  });
+  const [checkoutStep, setCheckoutStep] = useState("cart");
   const [customerInfo, setCustomerInfo] = useState({
     fullName: "",
     phone: "",
@@ -192,11 +181,10 @@ export default function Shop({
       UI_STORAGE_KEY,
       JSON.stringify({
         isCartOpen,
-        checkoutStep,
         showAccountPage,
       })
     );
-  }, [isCartOpen, checkoutStep, showAccountPage]);
+  }, [isCartOpen, showAccountPage]);
 
   useEffect(() => {
     try {
@@ -252,11 +240,9 @@ export default function Shop({
 
     setShowAccountPage(false);
     setLastPlacedOrder(null);
-
-    if (checkoutStep !== "cart") {
-      setCheckoutStep("cart");
-    }
-  }, [customerSession, checkoutStep]);
+    setCheckoutStep("cart");
+    setPlacingOrder(false);
+  }, [customerSession]);
 
   const fetchProducts = async () => {
     try {
@@ -528,7 +514,9 @@ export default function Shop({
   };
 
   const PHONE_REGEX = /^[0-9+\s()-]{8,20}$/;
-  const activeCheckoutStep = !customerSession && checkoutStep !== "success"
+  const activeCheckoutStep = !customerSession
+    ? "cart"
+    : checkoutStep === "success" && !lastPlacedOrder
     ? "cart"
     : checkoutStep;
 
@@ -596,24 +584,27 @@ export default function Shop({
   };
 
   const handleCheckout = () => {
-      if (cartItems.length === 0) {
-        setMessage("Ajoutez au moins un article avant de commander.");
-        setTimeout(() => setMessage(""), 1800);
-        return;
-      }
+    if (cartItems.length === 0) {
+      setMessage("Ajoutez au moins un article avant de commander.");
+      setTimeout(() => setMessage(""), 1800);
+      return;
+    }
 
-      if (!customerSession) {
-        setMessage("Connectez-vous pour finaliser votre commande.");
-        setTimeout(() => setMessage(""), 2200);
-        onOpenLogin?.();
-        return;
-      }
-  
-      setCheckoutStep("checkout");
-    };
+    if (!customerSession) {
+      setCheckoutStep("cart");
+      setMessage("Connectez-vous pour finaliser votre commande.");
+      setTimeout(() => setMessage(""), 2200);
+      onOpenLogin?.();
+      return;
+    }
+
+    setCheckoutStep("checkout");
+  };
 
   const handlePlaceOrder = async () => {
     if (!customerSession) {
+      setCheckoutStep("cart");
+      setPlacingOrder(false);
       setMessage("Connectez-vous pour confirmer votre commande.");
       setTimeout(() => setMessage(""), 2200);
       onOpenLogin?.();
