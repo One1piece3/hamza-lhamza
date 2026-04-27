@@ -580,16 +580,30 @@ export default function Shop({
   };
 
   const handleCheckout = () => {
-    if (cartItems.length === 0) {
-      setMessage("Ajoutez au moins un article avant de commander.");
-      setTimeout(() => setMessage(""), 1800);
+      if (cartItems.length === 0) {
+        setMessage("Ajoutez au moins un article avant de commander.");
+        setTimeout(() => setMessage(""), 1800);
+        return;
+      }
+
+      if (!customerSession) {
+        setMessage("Connectez-vous pour finaliser votre commande.");
+        setTimeout(() => setMessage(""), 2200);
+        onOpenLogin?.();
+        return;
+      }
+  
+      setCheckoutStep("checkout");
+    };
+
+  const handlePlaceOrder = async () => {
+    if (!customerSession) {
+      setMessage("Connectez-vous pour confirmer votre commande.");
+      setTimeout(() => setMessage(""), 2200);
+      onOpenLogin?.();
       return;
     }
 
-    setCheckoutStep("checkout");
-  };
-
-  const handlePlaceOrder = async () => {
     if (!validateCheckout()) return;
 
     try {
