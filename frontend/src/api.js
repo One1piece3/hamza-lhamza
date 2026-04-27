@@ -3,8 +3,8 @@ export const API_BASE_URL = (
 ).replace(/\/$/, "");
 export const API_URL = API_BASE_URL ? `${API_BASE_URL}/api` : "/api";
 export const STORAGE_URL = API_BASE_URL
-  ? `${API_BASE_URL}/storage`
-  : "/storage";
+  ? `${API_BASE_URL}/media`
+  : "/media";
 
 export function getStorageUrl(path) {
   if (!path) return "";
@@ -16,7 +16,10 @@ export function getStorageUrl(path) {
     return value;
   }
 
-  const cleanPath = value.replace(/^\/+/, "").replace(/^storage\/+/i, "");
+  const cleanPath = value
+    .replace(/^\/+/, "")
+    .replace(/^storage\/+/i, "")
+    .replace(/^media\/+/i, "");
   return `${STORAGE_URL}/${cleanPath}`;
 }
 

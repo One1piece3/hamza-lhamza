@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/storage/{path}', function (string $path) {
+Route::get('/media/{path}', function (string $path) {
     if (str_contains($path, '..') || !Storage::disk('public')->exists($path)) {
         abort(404);
     }
