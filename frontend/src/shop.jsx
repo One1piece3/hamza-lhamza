@@ -639,11 +639,12 @@ export default function Shop({
       const orderSnapshot = response.data.order;
       setLastPlacedOrder(orderSnapshot);
       setCustomerOrders((prev) => [orderSnapshot, ...prev]);
+      setCheckoutStep("success");
 
       const orderMessage = `${buildOrderMessage(orderSnapshot)}\nReference: ${orderSnapshot.reference}`;
 
       if (navigator?.clipboard?.writeText) {
-        await navigator.clipboard.writeText(orderMessage);
+        navigator.clipboard.writeText(orderMessage).catch(() => {});
       }
 
       setMessage(
@@ -660,8 +661,6 @@ export default function Shop({
     } finally {
       setPlacingOrder(false);
     }
-
-    setCheckoutStep("success");
     setTimeout(() => setMessage(""), 3000);
   };
 
