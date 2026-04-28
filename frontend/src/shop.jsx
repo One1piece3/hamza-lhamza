@@ -190,8 +190,10 @@ export default function Shop({
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   const [currentImageIndexes, setCurrentImageIndexes] = useState({});
+  const [brokenProductImages, setBrokenProductImages] = useState({});
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [detailImageIndex, setDetailImageIndex] = useState(0);
+  const [detailImageFailed, setDetailImageFailed] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
   const [cartItems, setCartItems] = useState(() => {
@@ -452,6 +454,34 @@ export default function Shop({
     return getStorageUrl(product.images[safeIndex].image_path);
   };
 
+  const renderSearchInput = (mobile = false) => (
+    <div
+      style={{
+        ...styles.searchWrap,
+        ...(mobile ? styles.mobileSearchWrap : {}),
+      }}
+    >
+      <Search size={16} style={styles.searchIcon} />
+      <input
+        type="text"
+        placeholder="Rechercher un article..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={{
+          ...styles.searchInput,
+          ...(isTablet ? { width: "100%" } : {}),
+          ...(mobile
+            ? {
+                width: "100%",
+                padding: "13px 16px 13px 42px",
+                borderRadius: "18px",
+              }
+            : {}),
+        }}
+      />
+    </div>
+  );
+
   const nextCardImage = (productId, imagesLength) => {
     setCurrentImageIndexes((prev) => ({
       ...prev,
@@ -469,12 +499,14 @@ export default function Shop({
   const openProduct = (product) => {
     setSelectedProduct(product);
     setDetailImageIndex(0);
+    setDetailImageFailed(false);
     setQuantity(1);
   };
 
   const closeProduct = () => {
     setSelectedProduct(null);
     setDetailImageIndex(0);
+    setDetailImageFailed(false);
     setQuantity(1);
   };
 
@@ -930,8 +962,9 @@ export default function Shop({
             ...styles.header,
             ...(isMobile
               ? {
-                  padding: "14px 14px 18px",
+                  padding: "18px 16px 22px",
                   borderRadius: "26px",
+                  marginBottom: "18px",
                 }
               : {}),
           }}
@@ -1004,6 +1037,8 @@ export default function Shop({
                   </div>
                 </div>
               )}
+
+              {isMobile ? renderSearchInput(true) : null}
             </div>
 
             <div
@@ -1050,31 +1085,7 @@ export default function Shop({
                   : {}),
               }}
             >
-              <div
-                style={{
-                  ...styles.searchWrap,
-                  ...(isMobile ? { width: "100%" } : {}),
-                }}
-              >
-                <Search size={16} style={styles.searchIcon} />
-                <input
-                  type="text"
-                  placeholder="Rechercher un article..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  style={{
-                    ...styles.searchInput,
-                    ...(isTablet ? { width: "100%" } : {}),
-                    ...(isMobile
-                      ? {
-                          width: "100%",
-                          padding: "12px 14px 12px 40px",
-                          borderRadius: "18px",
-                        }
-                      : {}),
-                  }}
-                />
-              </div>
+              {!isMobile ? renderSearchInput(false) : null}
 
               {!customerSession ? (
                 <div
@@ -1268,7 +1279,8 @@ export default function Shop({
           style={{
             ...styles.hero,
             ...(isCompactCatalog ? styles.heroCompact : {}),
-            ...(isTablet ? { gridTemplateColumns: "1fr", padding: isMobile ? "22px" : "28px" } : {}),
+            ...(isTablet ? { gridTemplateColumns: "1fr", padding: isMobile ? "24px 18px" : "28px" } : {}),
+            ...(isMobile ? { marginBottom: "18px", gap: "18px" } : {}),
           }}
         >
           <div style={styles.heroMain}>
@@ -1347,7 +1359,7 @@ export default function Shop({
           </div>
           </section>
 
-          <section style={styles.filtersShell}>
+          <section style={{ ...styles.filtersShell, ...(isMobile ? { marginBottom: "18px" } : {}) }}>
             <div
               style={{
                 ...styles.filtersBar,
@@ -1479,12 +1491,12 @@ export default function Shop({
             </AnimatePresence>
           </section>
 
-        <section
-          style={{
-            ...styles.checkoutHighlights,
-            ...(isMobile ? { gridTemplateColumns: "1fr" } : {}),
-          }}
-        >
+          <section
+            style={{
+              ...styles.checkoutHighlights,
+              ...(isMobile ? { gridTemplateColumns: "1fr", marginBottom: "18px", gap: "12px" } : {}),
+            }}
+          >
           <div style={styles.checkoutStatCard}>
             <span style={styles.checkoutStatValue}>{filteredProducts.length}</span>
             <span style={styles.checkoutStatLabel}>articles visibles</span>
@@ -1510,7 +1522,7 @@ export default function Shop({
           style={{
             ...styles.productsGrid,
             ...(isMobile
-              ? { gridTemplateColumns: "1fr", justifyItems: "center" }
+              ? { gridTemplateColumns: "1fr", justifyItems: "stretch", gap: "18px" }
               : isTablet
               ? { gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }
               : isCompactCatalog
@@ -1522,6 +1534,7 @@ export default function Shop({
               const currentIndex = currentImageIndexes[product.id] || 0;
               const imageUrl = getImageUrl(product, currentIndex);
               const hasMultipleImages = product.images && product.images.length > 1;
+              const isCardImageBroken = brokenProductImages[product.id] === true;
 
               return (
                 <motion.article
@@ -1538,12 +1551,26 @@ export default function Shop({
                       ...(isMobile ? { height: isPhone ? "260px" : "280px" } : {}),
                     }}
                   >
-                    {imageUrl ? (
+                    {imageUrl && !isCardImageBroken ? (
                       <>
                         <img
                           src={imageUrl}
                           alt={product.name}
                           style={styles.productImage}
+                          onLoad={() =>
+                            setBrokenProductImages((prev) => {
+                              if (!prev[product.id]) return prev;
+                              return { ...prev, [product.id]: false };
+                            })
+                          }
+                          onError={() => {
+                            if (hasMultipleImages && currentIndex !== 0) {
+                              setCurrentImageIndexes((prev) => ({ ...prev, [product.id]: 0 }));
+                              return;
+                            }
+
+                            setBrokenProductImages((prev) => ({ ...prev, [product.id]: true }));
+                          }}
                         />
 
                         {hasMultipleImages && (
@@ -1805,18 +1832,27 @@ export default function Shop({
                 }}
               >
                 <div>
-                  {selectedProduct.images && selectedProduct.images.length > 0 ? (
-                    <div
-                      style={{
-                        ...styles.detailImageWrap,
+                    {selectedProduct.images && selectedProduct.images.length > 0 && !detailImageFailed ? (
+                      <div
+                        style={{
+                          ...styles.detailImageWrap,
                         ...(isMobile ? { height: "340px" } : isTablet ? { height: "420px" } : {}),
                       }}
-                    >
-                      <img
-                        src={getStorageUrl(selectedProduct.images[detailImageIndex].image_path)}
-                        alt={selectedProduct.name}
-                        style={styles.detailImage}
-                      />
+                      >
+                        <img
+                          src={getStorageUrl(selectedProduct.images[detailImageIndex].image_path)}
+                          alt={selectedProduct.name}
+                          style={styles.detailImage}
+                          onLoad={() => setDetailImageFailed(false)}
+                          onError={() => {
+                            if (selectedProduct.images.length > 1 && detailImageIndex !== 0) {
+                              setDetailImageIndex(0);
+                              return;
+                            }
+
+                            setDetailImageFailed(true);
+                          }}
+                        />
 
                       {selectedProduct.images.length > 1 && (
                         <>
@@ -2509,6 +2545,10 @@ const styles = {
   searchWrap: {
     position: "relative",
     flex: 1,
+  },
+  mobileSearchWrap: {
+    width: "100%",
+    marginTop: "2px",
   },
   searchIcon: {
     position: "absolute",
