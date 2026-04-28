@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\PasswordResetLinkNotification;
 use App\Models\User;
 use App\Support\AdminTokenStore;
+use App\Support\BrevoTransactionalMailer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -12,6 +14,11 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
+    public function __construct(
+        protected BrevoTransactionalMailer $transactionalMailer
+    ) {
+    }
+
     public function register(Request $request)
     {
         $data = $request->validate([
@@ -106,16 +113,20 @@ class AuthController extends Controller
     {
         $data = $request->validate([
             'email' => 'required|email',
+            'frontend_url' => 'nullable|url',
         ]);
 
-        $status = Password::sendResetLink([
-            'email' => strtolower(trim($data['email'])),
-        ]);
+        $email = strtolower(trim($data['email']));
+        $user = User::where('email', $email)->first();
 
-        if ($status !== Password::RESET_LINK_SENT) {
-            return response()->json([
-                'message' => __($status),
-            ], 422);
+        if ($user) {
+            $token = Password::createToken($user);
+            $resetUrl = $this->buildResetUrl($request, $user, $token);
+
+            $this->transactionalMailer->send(
+                $user->email,
+                new PasswordResetLinkNotification($user, $resetUrl)
+            );
         }
 
         return response()->json([
@@ -152,5 +163,21 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Mot de passe reinitialise avec succes.',
         ]);
+    }
+
+    protected function buildResetUrl(Request $request, User $user, string $token): string
+    {
+        $requestedFrontendUrl = trim((string) $request->input('frontend_url', ''));
+        $frontendUrl = trim((string) env('FRONTEND_URL', 'http://localhost:5173'));
+
+        if ($requestedFrontendUrl !== '') {
+            $host = parse_url($requestedFrontendUrl, PHP_URL_HOST);
+
+            if (!in_array($host, ['localhost', '127.0.0.1'], true)) {
+                $frontendUrl = rtrim($requestedFrontendUrl, '/');
+            }
+        }
+
+        return rtrim($frontendUrl, '/') . '/reset-password?token=' . $token . '&email=' . urlencode($user->email);
     }
 }

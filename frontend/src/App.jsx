@@ -31,7 +31,8 @@ function App() {
     rememberMe: true,
   });
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
+  const [forgotLoading, setForgotLoading] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
 
   const isAdmin = useMemo(() => Boolean(adminSession?.token), [adminSession]);
@@ -65,7 +66,8 @@ function App() {
   const resetAuthForm = () => {
     setForm({ name: "", email: "", password: "", rememberMe: true });
     setMessage("");
-    setLoading(false);
+    setAuthLoading(false);
+    setForgotLoading(false);
   };
 
   const openAuthModal = (mode = "login") => {
@@ -82,7 +84,11 @@ function App() {
 
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    if (authLoading) {
+      return;
+    }
+
+    setAuthLoading(true);
     setMessage("");
 
     try {
@@ -116,13 +122,17 @@ function App() {
       console.error("Erreur auth :", error);
       setMessage(getApiErrorMessage(error, "Impossible de se connecter pour le moment."));
     } finally {
-      setLoading(false);
+      setAuthLoading(false);
     }
   };
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    if (forgotLoading) {
+      return;
+    }
+
+    setForgotLoading(true);
     setMessage("");
 
     try {
@@ -135,7 +145,7 @@ function App() {
       console.error("Erreur forgot password :", error);
       setMessage(getApiErrorMessage(error, "Impossible d'envoyer le lien de reinitialisation."));
     } finally {
-      setLoading(false);
+      setForgotLoading(false);
     }
   };
 
@@ -322,8 +332,8 @@ function App() {
                 </label>
               )}
 
-              <button type="submit" style={styles.goldButton} disabled={loading}>
-                {loading
+              <button type="submit" style={styles.goldButton} disabled={authLoading}>
+                {authLoading
                   ? "Chargement..."
                   : authMode === "login"
                   ? "Se connecter"
@@ -343,8 +353,8 @@ function App() {
                     placeholder="Votre email"
                     required
                   />
-                  <button type="submit" style={styles.forgotButton} disabled={loading}>
-                    Envoyer le lien
+                  <button type="submit" style={styles.forgotButton} disabled={forgotLoading}>
+                    {forgotLoading ? "Envoi..." : "Envoyer le lien"}
                   </button>
                 </form>
               </div>
