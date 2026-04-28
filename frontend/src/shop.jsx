@@ -20,6 +20,9 @@ import {
   CheckCircle2,
   ArrowRight,
   LogOut,
+  SlidersHorizontal,
+  ChevronDown,
+  Mail,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { API_URL, getApiErrorMessage, getStorageUrl } from "./api";
@@ -112,6 +115,7 @@ export default function Shop({
   const [priceFilter, setPriceFilter] = useState("all");
   const [stockFilter, setStockFilter] = useState("all");
   const [sortBy, setSortBy] = useState("featured");
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   const [currentImageIndexes, setCurrentImageIndexes] = useState({});
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -360,6 +364,15 @@ export default function Shop({
 
   const isCompactCatalog = filteredProducts.length > 0 && filteredProducts.length <= 6;
   const heroMainProduct = null;
+  const activeFiltersCount = [
+    category !== "all",
+    sizeFilter !== "all",
+    colorFilter !== "all",
+    priceFilter !== "all",
+    stockFilter !== "all",
+    sortBy !== "featured",
+    search.trim() !== "",
+  ].filter(Boolean).length;
 
   const getImageUrl = (product, imageIndex = 0) => {
     if (!product.images || product.images.length === 0) return null;
@@ -1248,89 +1261,143 @@ export default function Shop({
               </div>
             </div>
           </div>
-        </section>        <section
-          style={{
-            ...styles.toolbar,
-            ...(isMobile ? { flexDirection: "column" } : {}),
-          }}
-        >
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            style={{ ...styles.select, ...(isMobile ? { width: "100%" } : {}) }}
-          >
-            {categories.map((item) => (
-              <option key={item} value={item}>
-                {item === "all" ? "Toutes les categories" : item}
-              </option>
-            ))}
-          </select>
+          </section>
 
-          <select
-            value={sizeFilter}
-            onChange={(e) => setSizeFilter(e.target.value)}
-            style={{ ...styles.select, ...(isMobile ? { width: "100%" } : {}) }}
-          >
-            {sizes.map((item) => (
-              <option key={item} value={item}>
-                {item === "all" ? "Toutes les tailles" : item}
-              </option>
-            ))}
-          </select>
+          <section style={styles.filtersShell}>
+            <div
+              style={{
+                ...styles.filtersBar,
+                ...(isMobile ? { flexDirection: "column", alignItems: "stretch" } : {}),
+              }}
+            >
+              <button
+                type="button"
+                style={{
+                  ...styles.filtersToggleButton,
+                  ...(isMobile ? { width: "100%" } : {}),
+                }}
+                onClick={() => setIsFiltersOpen((prev) => !prev)}
+              >
+                <span style={styles.filtersToggleContent}>
+                  <SlidersHorizontal size={16} />
+                  <span>Filtres</span>
+                  {activeFiltersCount > 0 && (
+                    <span style={styles.filtersCountBadge}>{activeFiltersCount}</span>
+                  )}
+                </span>
+                <ChevronDown
+                  size={16}
+                  style={{
+                    transform: isFiltersOpen ? "rotate(180deg)" : "rotate(0deg)",
+                    transition: "transform 0.2s ease",
+                  }}
+                />
+              </button>
 
-          <select
-            value={colorFilter}
-            onChange={(e) => setColorFilter(e.target.value)}
-            style={{ ...styles.select, ...(isMobile ? { width: "100%" } : {}) }}
-          >
-            {colors.map((item) => (
-              <option key={item} value={item}>
-                {item === "all" ? "Toutes les couleurs" : item}
-              </option>
-            ))}
-          </select>
+              <div
+                style={{
+                  ...styles.filtersSummary,
+                  ...(isMobile ? { width: "100%", justifyContent: "space-between" } : {}),
+                }}
+              >
+                <span>
+                  {activeFiltersCount > 0
+                    ? `${activeFiltersCount} filtre(s) actif(s)`
+                    : "Tous les produits sont visibles"}
+                </span>
+                <button type="button" style={styles.filtersResetButton} onClick={resetCatalogFilters}>
+                  Reinitialiser
+                </button>
+              </div>
+            </div>
 
-          <select
-            value={priceFilter}
-            onChange={(e) => setPriceFilter(e.target.value)}
-            style={{ ...styles.select, ...(isMobile ? { width: "100%" } : {}) }}
-          >
-            <option value="all">Tous les prix</option>
-            <option value="under_500">Moins de 500 DH</option>
-            <option value="500_1000">500 a 1000 DH</option>
-            <option value="above_1000">Plus de 1000 DH</option>
-          </select>
+            <AnimatePresence initial={false}>
+              {isFiltersOpen && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, y: -8 }}
+                  animate={{ opacity: 1, height: "auto", y: 0 }}
+                  exit={{ opacity: 0, height: 0, y: -8 }}
+                  style={styles.filtersPanel}
+                >
+                  <div
+                    style={{
+                      ...styles.toolbar,
+                      ...(isMobile ? { gridTemplateColumns: "1fr" } : {}),
+                    }}
+                  >
+                    <select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      style={{ ...styles.select, ...(isMobile ? { width: "100%" } : {}) }}
+                    >
+                      {categories.map((item) => (
+                        <option key={item} value={item}>
+                          {item === "all" ? "Toutes les categories" : item}
+                        </option>
+                      ))}
+                    </select>
 
-          <select
-            value={stockFilter}
-            onChange={(e) => setStockFilter(e.target.value)}
-            style={{ ...styles.select, ...(isMobile ? { width: "100%" } : {}) }}
-          >
-            <option value="all">Tous les stocks</option>
-            <option value="in_stock">Disponible</option>
-            <option value="low_stock">Stock faible</option>
-            <option value="featured">Mis en avant</option>
-          </select>
+                    <select
+                      value={sizeFilter}
+                      onChange={(e) => setSizeFilter(e.target.value)}
+                      style={{ ...styles.select, ...(isMobile ? { width: "100%" } : {}) }}
+                    >
+                      {sizes.map((item) => (
+                        <option key={item} value={item}>
+                          {item === "all" ? "Toutes les tailles" : item}
+                        </option>
+                      ))}
+                    </select>
 
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            style={{ ...styles.select, ...(isMobile ? { width: "100%" } : {}) }}
-          >
-            <option value="featured">Produits mis en avant</option>
-            <option value="latest">Plus recents</option>
-            <option value="price_asc">Prix croissant</option>
-            <option value="price_desc">Prix decroissant</option>
-          </select>
+                    <select
+                      value={colorFilter}
+                      onChange={(e) => setColorFilter(e.target.value)}
+                      style={{ ...styles.select, ...(isMobile ? { width: "100%" } : {}) }}
+                    >
+                      {colors.map((item) => (
+                        <option key={item} value={item}>
+                          {item === "all" ? "Toutes les couleurs" : item}
+                        </option>
+                      ))}
+                    </select>
 
-          <button
-            type="button"
-            style={{ ...styles.secondaryButton, ...(isMobile ? { width: "100%" } : { width: "220px" }) }}
-            onClick={resetCatalogFilters}
-          >
-            Reinitialiser les filtres
-          </button>
-        </section>
+                    <select
+                      value={priceFilter}
+                      onChange={(e) => setPriceFilter(e.target.value)}
+                      style={{ ...styles.select, ...(isMobile ? { width: "100%" } : {}) }}
+                    >
+                      <option value="all">Tous les prix</option>
+                      <option value="under_500">Moins de 500 DH</option>
+                      <option value="500_1000">500 a 1000 DH</option>
+                      <option value="above_1000">Plus de 1000 DH</option>
+                    </select>
+
+                    <select
+                      value={stockFilter}
+                      onChange={(e) => setStockFilter(e.target.value)}
+                      style={{ ...styles.select, ...(isMobile ? { width: "100%" } : {}) }}
+                    >
+                      <option value="all">Tous les stocks</option>
+                      <option value="in_stock">Disponible</option>
+                      <option value="low_stock">Stock faible</option>
+                      <option value="featured">Mis en avant</option>
+                    </select>
+
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      style={{ ...styles.select, ...(isMobile ? { width: "100%" } : {}) }}
+                    >
+                      <option value="featured">Produits mis en avant</option>
+                      <option value="latest">Plus recents</option>
+                      <option value="price_asc">Prix croissant</option>
+                      <option value="price_desc">Prix decroissant</option>
+                    </select>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </section>
 
         <section
           style={{
@@ -1494,27 +1561,75 @@ export default function Shop({
           </section>
         )}
 
-        <section
-          style={{
-            ...styles.footerInfo,
-            ...(isMobile ? { gridTemplateColumns: "1fr" } : {}),
-          }}
-        >
-          {Object.entries(INFO_PAGES).map(([key, page]) => (
-            <article key={key} style={styles.footerInfoCard}>
-              <h3 style={styles.footerInfoTitle}>{page.title}</h3>
-              <p style={styles.footerInfoText}>{page.subtitle}</p>
-              <button
-                type="button"
-                style={{ ...styles.navGoldButton, marginTop: "14px" }}
-                onClick={() => setActiveInfoPage(key)}
-              >
-                Voir le detail
-              </button>
-            </article>
-          ))}
-        </section>
-      </div>
+          <section
+            style={{
+              ...styles.footerInfo,
+              ...(isMobile ? { gridTemplateColumns: "1fr" } : {}),
+            }}
+          >
+            {Object.entries(INFO_PAGES).map(([key, page]) => (
+              <article key={key} style={styles.footerInfoCard}>
+                <div style={styles.footerInfoCardBody}>
+                  <h3 style={styles.footerInfoTitle}>{page.title}</h3>
+                  <p style={styles.footerInfoText}>{page.subtitle}</p>
+                </div>
+                <button
+                  type="button"
+                  style={styles.footerInfoButton}
+                  onClick={() => setActiveInfoPage(key)}
+                >
+                  Voir le detail
+                </button>
+              </article>
+            ))}
+          </section>
+
+          <footer
+            style={{
+              ...styles.siteFooter,
+              ...(isMobile ? { gridTemplateColumns: "1fr", padding: "24px 20px" } : {}),
+            }}
+          >
+            <div style={styles.siteFooterBrand}>
+              <span style={styles.siteFooterEyebrow}>Hamza Lhamza</span>
+              <h3 style={styles.siteFooterTitle}>Une boutique plus claire, plus rassurante et plus premium.</h3>
+              <p style={styles.siteFooterText}>
+                Pieces soigneusement selectionnees, suivi simple et contact direct pour accompagner chaque commande.
+              </p>
+            </div>
+
+            <div style={styles.siteFooterLinks}>
+              <div style={styles.siteFooterColumn}>
+                <span style={styles.siteFooterColumnTitle}>Navigation</span>
+                <button type="button" style={styles.siteFooterLink} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+                  Retour en haut
+                </button>
+                <button type="button" style={styles.siteFooterLink} onClick={() => setActiveInfoPage("livraison")}>
+                  Livraison
+                </button>
+                <button type="button" style={styles.siteFooterLink} onClick={() => setActiveInfoPage("retours")}>
+                  Retours
+                </button>
+              </div>
+
+              <div style={styles.siteFooterColumn}>
+                <span style={styles.siteFooterColumnTitle}>Contact</span>
+                <a href={`mailto:hamzalhamza81@gmail.com`} style={styles.siteFooterAnchor}>
+                  <Mail size={15} />
+                  <span>hamzalhamza81@gmail.com</span>
+                </a>
+                <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" style={styles.siteFooterAnchor}>
+                  <MessageSquare size={15} />
+                  <span>{WHATSAPP_LABEL}</span>
+                </a>
+                <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" style={styles.siteFooterAnchor}>
+                  <Star size={15} />
+                  <span>@hamza_lhamza7</span>
+                </a>
+              </div>
+            </div>
+          </footer>
+        </div>
 
       <AnimatePresence>
         {activeInfoPage && (
@@ -2478,11 +2593,81 @@ const styles = {
     boxShadow: "0 12px 22px rgba(194,121,96,0.08)",
   },
   toolbar: {
-    display: "flex",
-    gap: "12px",
-    flexWrap: "wrap",
-    marginBottom: "20px",
-  },
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+      gap: "12px",
+      marginBottom: 0,
+    },
+    filtersShell: {
+      marginBottom: "20px",
+    },
+    filtersBar: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: "12px",
+      marginBottom: "12px",
+    },
+    filtersToggleButton: {
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: "12px",
+      minWidth: "220px",
+      border: "1px solid rgba(230,188,168,0.7)",
+      background: "rgba(255,255,255,0.94)",
+      color: "#1f2430",
+      borderRadius: "16px",
+      padding: "14px 16px",
+      cursor: "pointer",
+      fontWeight: "700",
+      boxShadow: "0 12px 26px rgba(194,121,96,0.08)",
+    },
+    filtersToggleContent: {
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "10px",
+    },
+    filtersCountBadge: {
+      minWidth: "24px",
+      height: "24px",
+      borderRadius: "999px",
+      padding: "0 8px",
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "linear-gradient(135deg, #ff7e5f 0%, #ff5f6d 100%)",
+      color: "#fff",
+      fontSize: "12px",
+      fontWeight: "800",
+      boxShadow: "0 10px 22px rgba(255,95,109,0.18)",
+    },
+    filtersSummary: {
+      display: "flex",
+      alignItems: "center",
+      gap: "12px",
+      color: "#5e6677",
+      fontSize: "14px",
+    },
+    filtersResetButton: {
+      border: "1px solid rgba(255,126,95,0.28)",
+      background: "#fff",
+      color: "#d85d49",
+      borderRadius: "12px",
+      padding: "10px 14px",
+      cursor: "pointer",
+      fontWeight: "700",
+      whiteSpace: "nowrap",
+    },
+    filtersPanel: {
+      overflow: "hidden",
+      background: "rgba(255,255,255,0.7)",
+      border: "1px solid rgba(230,188,168,0.52)",
+      borderRadius: "24px",
+      padding: "18px",
+      boxShadow: "0 14px 30px rgba(194,121,96,0.08)",
+      backdropFilter: "blur(12px)",
+    },
   checkoutHighlights: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))",
@@ -2833,14 +3018,15 @@ const styles = {
     lineHeight: 1.7,
   },
   select: {
-    background: "rgba(255,255,255,0.94)",
-    border: "1px solid rgba(230,188,168,0.7)",
-    color: "#293243",
-    borderRadius: "14px",
-    padding: "13px 14px",
-    outline: "none",
-    minWidth: "220px",
-  },
+      background: "rgba(255,255,255,0.94)",
+      border: "1px solid rgba(230,188,168,0.7)",
+      color: "#293243",
+      borderRadius: "14px",
+      padding: "13px 14px",
+      outline: "none",
+      minWidth: 0,
+      width: "100%",
+    },
   retryButton: {
     marginTop: "12px",
     border: "1px solid rgba(255,126,95,0.28)",
@@ -3510,22 +3696,119 @@ const styles = {
     gap: "16px",
   },
   footerInfoCard: {
-    background: "rgba(255,255,255,0.92)",
-    border: "1px solid rgba(230,188,168,0.62)",
-    borderRadius: "24px",
-    padding: "20px",
-    boxShadow: "0 12px 26px rgba(194,121,96,0.08)",
-  },
-  footerInfoTitle: {
-    margin: "0 0 8px",
-    color: "#1f2430",
-    fontSize: "20px",
-  },
-  footerInfoText: {
-    margin: 0,
-    color: "#5e6677",
-    lineHeight: 1.7,
-  },
+      background: "rgba(255,255,255,0.92)",
+      border: "1px solid rgba(230,188,168,0.62)",
+      borderRadius: "24px",
+      padding: "20px",
+      minHeight: "188px",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
+      boxShadow: "0 12px 26px rgba(194,121,96,0.08)",
+    },
+    footerInfoCardBody: {
+      display: "grid",
+      gap: "8px",
+    },
+    footerInfoTitle: {
+      margin: "0 0 8px",
+      color: "#1f2430",
+      fontSize: "20px",
+    },
+    footerInfoText: {
+      margin: 0,
+      color: "#5e6677",
+      lineHeight: 1.7,
+    },
+    footerInfoButton: {
+      ...{
+        background: "linear-gradient(135deg, #ff7e5f 0%, #ff5f6d 100%)",
+        border: "none",
+        color: "#fff",
+        borderRadius: "14px",
+        padding: "11px 14px",
+        cursor: "pointer",
+        fontWeight: "bold",
+        whiteSpace: "nowrap",
+        boxShadow: "0 14px 26px rgba(255,95,109,0.2)",
+        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+      },
+      marginTop: "16px",
+      alignSelf: "flex-start",
+    },
+    siteFooter: {
+      marginTop: "22px",
+      display: "grid",
+      gridTemplateColumns: "1.3fr 1fr",
+      gap: "28px",
+      padding: "28px",
+      borderRadius: "28px",
+      background:
+        "linear-gradient(135deg, rgba(39,35,47,0.96) 0%, rgba(85,56,57,0.93) 52%, rgba(205,110,90,0.88) 100%)",
+      color: "#fff7f2",
+      border: "1px solid rgba(255,214,198,0.18)",
+      boxShadow: "0 24px 60px rgba(88,54,53,0.22)",
+    },
+    siteFooterBrand: {
+      display: "grid",
+      gap: "10px",
+      alignContent: "start",
+    },
+    siteFooterEyebrow: {
+      fontSize: "12px",
+      letterSpacing: "0.16em",
+      textTransform: "uppercase",
+      color: "rgba(255,221,205,0.78)",
+      fontWeight: "700",
+    },
+    siteFooterTitle: {
+      margin: 0,
+      fontSize: "30px",
+      lineHeight: 1.15,
+      color: "#fffaf7",
+      fontFamily: "Georgia, 'Times New Roman', serif",
+    },
+    siteFooterText: {
+      margin: 0,
+      color: "rgba(255,240,232,0.84)",
+      lineHeight: 1.8,
+      maxWidth: "560px",
+    },
+    siteFooterLinks: {
+      display: "grid",
+      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+      gap: "18px",
+    },
+    siteFooterColumn: {
+      display: "grid",
+      alignContent: "start",
+      gap: "10px",
+    },
+    siteFooterColumnTitle: {
+      fontSize: "13px",
+      textTransform: "uppercase",
+      letterSpacing: "0.12em",
+      color: "rgba(255,221,205,0.78)",
+      fontWeight: "700",
+      marginBottom: "4px",
+    },
+    siteFooterLink: {
+      background: "transparent",
+      border: "none",
+      padding: 0,
+      textAlign: "left",
+      color: "#fff7f2",
+      cursor: "pointer",
+      fontSize: "15px",
+    },
+    siteFooterAnchor: {
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "8px",
+      color: "#fff7f2",
+      textDecoration: "none",
+      fontSize: "15px",
+    },
   secondaryButton: {
     width: "100%",
     background: "rgba(255,255,255,0.95)",
