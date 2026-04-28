@@ -1,10 +1,26 @@
-export const API_BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL || ""
-).replace(/\/$/, "");
+function getApiBaseUrl() {
+  const configuredBaseUrl = (
+    import.meta.env.VITE_API_BASE_URL || ""
+  ).replace(/\/$/, "");
+
+  if (typeof window === "undefined") {
+    return configuredBaseUrl;
+  }
+
+  const { hostname } = window.location;
+  const isLocalEnvironment =
+    hostname === "localhost" || hostname === "127.0.0.1";
+
+  if (!isLocalEnvironment) {
+    return "";
+  }
+
+  return configuredBaseUrl;
+}
+
+export const API_BASE_URL = getApiBaseUrl();
 export const API_URL = API_BASE_URL ? `${API_BASE_URL}/api` : "/api";
-export const STORAGE_URL = API_BASE_URL
-  ? `${API_BASE_URL}/media`
-  : "/media";
+export const STORAGE_URL = API_BASE_URL ? `${API_BASE_URL}/media` : "/media";
 
 export function getStorageUrl(path) {
   if (!path) return "";
