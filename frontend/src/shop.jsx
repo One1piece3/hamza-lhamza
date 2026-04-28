@@ -1561,29 +1561,6 @@ export default function Shop({
           </section>
         )}
 
-          <section
-            style={{
-              ...styles.footerInfo,
-              ...(isMobile ? { gridTemplateColumns: "1fr" } : {}),
-            }}
-          >
-            {Object.entries(INFO_PAGES).map(([key, page]) => (
-              <article key={key} style={styles.footerInfoCard}>
-                <div style={styles.footerInfoCardBody}>
-                  <h3 style={styles.footerInfoTitle}>{page.title}</h3>
-                  <p style={styles.footerInfoText}>{page.subtitle}</p>
-                </div>
-                <button
-                  type="button"
-                  style={styles.footerInfoButton}
-                  onClick={() => setActiveInfoPage(key)}
-                >
-                  Voir le detail
-                </button>
-              </article>
-            ))}
-          </section>
-
           <footer
             style={{
               ...styles.siteFooter,
@@ -3700,53 +3677,6 @@ const styles = {
     flexDirection: "column",
     gap: "12px",
   },
-  footerInfo: {
-    marginTop: "32px",
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-    gap: "16px",
-  },
-  footerInfoCard: {
-      background: "rgba(255,255,255,0.92)",
-      border: "1px solid rgba(230,188,168,0.62)",
-      borderRadius: "24px",
-      padding: "20px",
-      minHeight: "188px",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-between",
-      boxShadow: "0 12px 26px rgba(194,121,96,0.08)",
-    },
-    footerInfoCardBody: {
-      display: "grid",
-      gap: "8px",
-    },
-    footerInfoTitle: {
-      margin: "0 0 8px",
-      color: "#1f2430",
-      fontSize: "20px",
-    },
-    footerInfoText: {
-      margin: 0,
-      color: "#5e6677",
-      lineHeight: 1.7,
-    },
-    footerInfoButton: {
-      ...{
-        background: "linear-gradient(135deg, #ff7e5f 0%, #ff5f6d 100%)",
-        border: "none",
-        color: "#fff",
-        borderRadius: "14px",
-        padding: "11px 14px",
-        cursor: "pointer",
-        fontWeight: "bold",
-        whiteSpace: "nowrap",
-        boxShadow: "0 14px 26px rgba(255,95,109,0.2)",
-        transition: "transform 0.2s ease, box-shadow 0.2s ease",
-      },
-      marginTop: "16px",
-      alignSelf: "flex-start",
-    },
     siteFooter: {
       marginTop: "22px",
       display: "grid",
