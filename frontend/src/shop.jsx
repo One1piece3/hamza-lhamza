@@ -37,6 +37,42 @@ const WHATSAPP_LABEL = "0776683632";
 const WHATSAPP_URL = "https://wa.me/212776683632";
 
 const INFO_PAGES = {
+  apropos: {
+    title: "A propos",
+    subtitle: "L identite de la boutique, sa selection et sa promesse de service.",
+    sections: [
+      {
+        title: "Vision",
+        text: "Hamza Lhamza propose une selection de pieces sobres, lisibles et desireables, avec une attention particuliere aux coupes, aux matieres et a la presentation.",
+      },
+      {
+        title: "Selection",
+        text: "Chaque article est choisi pour offrir un vestiaire plus net, plus premium et plus facile a porter au quotidien.",
+      },
+      {
+        title: "Service",
+        text: "La boutique privilegie un echange simple, un suivi clair et une relation de confiance avant, pendant et apres la commande.",
+      },
+    ],
+  },
+  faq: {
+    title: "FAQ",
+    subtitle: "Les reponses rapides aux questions les plus frequentes des clients.",
+    sections: [
+      {
+        title: "Comment commander ?",
+        text: "Ajoutez vos articles au panier, connectez-vous, completez vos coordonnees puis confirmez la commande depuis la boutique.",
+      },
+      {
+        title: "Comment suivre ma commande ?",
+        text: "Le client peut retrouver ses commandes dans Mon compte et recoit aussi des emails aux etapes importantes du suivi.",
+      },
+      {
+        title: "Que faire si la taille ne convient pas ?",
+        text: "Contactez rapidement la boutique avec votre reference de commande pour etudier la solution la plus adaptee.",
+      },
+    ],
+  },
   livraison: {
     title: "Livraison",
     subtitle: "Des commandes suivies clairement, du panier jusqu'a la reception.",
@@ -92,6 +128,42 @@ const INFO_PAGES = {
         text: "Retrouve la boutique, les nouveautes et l univers Hamza Lhamza sur Instagram.",
         actionLabel: "@hamza_lhamza7",
         actionUrl: INSTAGRAM_URL,
+      },
+    ],
+  },
+  mentions: {
+    title: "Mentions legales",
+    subtitle: "Les informations essentielles d identification de la boutique et du service.",
+    sections: [
+      {
+        title: "Editeur",
+        text: "Boutique Hamza Lhamza. Pour toute demande concernant le site, les commandes ou le contenu, utilisez l email de contact affiche dans la boutique.",
+      },
+      {
+        title: "Utilisation du site",
+        text: "Les informations, visuels et contenus sont fournis pour presenter les produits et faciliter la commande des clients.",
+      },
+      {
+        title: "Contact",
+        text: "Email : hamzalhamza81@gmail.com | WhatsApp : 0776683632",
+      },
+    ],
+  },
+  confidentialite: {
+    title: "Politique de confidentialite",
+    subtitle: "Une presentation simple de l usage des informations clients.",
+    sections: [
+      {
+        title: "Donnees collecte es",
+        text: "La boutique utilise les informations necessaires au traitement des commandes, au suivi client et a la communication liee au service.",
+      },
+      {
+        title: "Finalite",
+        text: "Les coordonnees transmises servent a confirmer la commande, organiser la livraison et informer le client de l avancement de son achat.",
+      },
+      {
+        title: "Protection",
+        text: "Les informations ne sont utilisees que dans le cadre de l activite de la boutique et ne doivent pas etre diffusees sans necessite de service.",
       },
     ],
   },
@@ -1584,15 +1656,18 @@ export default function Shop({
 
             <div style={styles.siteFooterLinks}>
               <div style={styles.siteFooterColumn}>
-                <span style={styles.siteFooterColumnTitle}>Navigation</span>
-                <button type="button" style={styles.siteFooterLink} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-                  Retour en haut
+                <span style={styles.siteFooterColumnTitle}>Infos boutique</span>
+                <button type="button" style={styles.siteFooterLink} onClick={() => setActiveInfoPage("apropos")}>
+                  A propos
                 </button>
-                <button type="button" style={styles.siteFooterLink} onClick={() => setActiveInfoPage("livraison")}>
-                  Livraison
+                <button type="button" style={styles.siteFooterLink} onClick={() => setActiveInfoPage("faq")}>
+                  FAQ
                 </button>
-                <button type="button" style={styles.siteFooterLink} onClick={() => setActiveInfoPage("retours")}>
-                  Retours
+                <button type="button" style={styles.siteFooterLink} onClick={() => setActiveInfoPage("mentions")}>
+                  Mentions legales
+                </button>
+                <button type="button" style={styles.siteFooterLink} onClick={() => setActiveInfoPage("confidentialite")}>
+                  Confidentialite
                 </button>
               </div>
 
