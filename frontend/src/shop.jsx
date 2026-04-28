@@ -760,6 +760,7 @@ export default function Shop({
 
   const isMobile = viewportWidth <= 768;
   const isTablet = viewportWidth <= 1100;
+  const isPhone = viewportWidth <= 560;
 
   const getCustomerOrderStatusStyle = (status) => {
     if (status === "confirmed") {
@@ -915,8 +916,13 @@ export default function Shop({
   };
 
   return (
-    <div style={styles.page}>
-      <div style={styles.container}>
+    <div
+      style={{
+        ...styles.page,
+        ...(isMobile ? { padding: "14px 10px 24px", overflowX: "hidden" } : {}),
+      }}
+    >
+      <div style={{ ...styles.container, ...(isPhone ? { width: "100%" } : {}) }}>
         <motion.header
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -940,7 +946,7 @@ export default function Shop({
             <div
               style={{
                 ...styles.brandBlock,
-                ...(isMobile ? { alignItems: "flex-start", gap: "14px" } : {}),
+                ...(isMobile ? { alignItems: "flex-start", gap: "14px", width: "100%" } : {}),
               }}
             >
               <img
@@ -978,15 +984,16 @@ export default function Shop({
                 <div
                   style={{
                     ...styles.userBadge,
-                    ...(isMobile
-                      ? {
-                          width: "100%",
-                          justifyContent: "flex-start",
-                          padding: "12px 14px",
-                          borderRadius: "20px",
-                        }
-                      : {}),
-                  }}
+                  ...(isMobile
+                    ? {
+                        width: "100%",
+                        justifyContent: "flex-start",
+                        padding: "12px 14px",
+                        borderRadius: "20px",
+                        order: 3,
+                      }
+                    : {}),
+                }}
                 >
                   <div style={styles.userBadgeIcon}>
                     <User size={16} />
@@ -1059,6 +1066,7 @@ export default function Shop({
                     ...(isTablet ? { width: "100%" } : {}),
                     ...(isMobile
                       ? {
+                          width: "100%",
                           padding: "12px 14px 12px 40px",
                           borderRadius: "18px",
                         }
@@ -1071,14 +1079,14 @@ export default function Shop({
                 <div
                   style={{
                     ...styles.authButtons,
-                    ...(isMobile
-                      ? {
-                          width: "100%",
-                          display: "grid",
-                          gridTemplateColumns: "1fr 1fr",
-                          gap: "10px",
-                        }
-                      : {}),
+                  ...(isMobile
+                    ? {
+                        width: "100%",
+                        display: "grid",
+                        gridTemplateColumns: isPhone ? "1fr" : "1fr 1fr",
+                        gap: "10px",
+                      }
+                    : {}),
                   }}
                 >
                   <button type="button" style={styles.navGhostButton} onClick={onOpenLogin}>
@@ -1187,14 +1195,17 @@ export default function Shop({
               <div style={styles.accountHeaderActions}>
                 <button
                   type="button"
-                  style={styles.accountRefreshButton}
+                  style={{
+                    ...styles.accountRefreshButton,
+                    ...(isMobile ? { width: "100%", justifyContent: "center" } : {}),
+                  }}
                   onClick={() => fetchCustomerOrders()}
                 >
                   Actualiser mes commandes
                 </button>
                 <button
                   type="button"
-                  style={styles.secondaryButton}
+                  style={isMobile ? { ...styles.secondaryButton, width: "100%" } : styles.secondaryButton}
                   onClick={() => setShowAccountPage(false)}
                 >
                   Retour boutique
@@ -1517,13 +1528,13 @@ export default function Shop({
                   whileHover={{ y: -6 }}
                   style={{
                     ...styles.productCard,
-                    ...(isMobile ? { width: "100%", maxWidth: "420px" } : {}),
+                    ...(isMobile ? { width: "100%", maxWidth: "100%" } : {}),
                   }}
                 >
                   <div
                     style={{
                       ...styles.productImageWrap,
-                      ...(isMobile ? { height: "280px" } : {}),
+                      ...(isMobile ? { height: isPhone ? "240px" : "280px" } : {}),
                     }}
                   >
                     {imageUrl ? (
@@ -1563,8 +1574,8 @@ export default function Shop({
                     )}
                   </div>
 
-                  <div style={styles.productContent}>
-                    <div style={styles.productTopRow}>
+                    <div style={{ ...styles.productContent, ...(isPhone ? { padding: "18px" } : {}) }}>
+                      <div style={{ ...styles.productTopRow, ...(isPhone ? { flexDirection: "column", gap: "8px" } : {}) }}>
                       <div>
                         <h3 style={styles.productTitle}>{product.name}</h3>
                         <p style={styles.productCategory}>
@@ -1648,13 +1659,20 @@ export default function Shop({
           >
             <div style={styles.siteFooterBrand}>
               <span style={styles.siteFooterEyebrow}>Hamza Lhamza</span>
-              <h3 style={styles.siteFooterTitle}>Une boutique plus claire, plus rassurante et plus premium.</h3>
-              <p style={styles.siteFooterText}>
+              <h3 style={{ ...styles.siteFooterTitle, ...(isPhone ? { fontSize: "30px", lineHeight: 1.12 } : {}) }}>
+                Une boutique plus claire, plus rassurante et plus premium.
+              </h3>
+              <p style={{ ...styles.siteFooterText, ...(isPhone ? { fontSize: "15px", lineHeight: 1.75 } : {}) }}>
                 Pieces soigneusement selectionnees, suivi simple et contact direct pour accompagner chaque commande.
               </p>
             </div>
 
-            <div style={styles.siteFooterLinks}>
+            <div
+              style={{
+                ...styles.siteFooterLinks,
+                ...(isMobile ? { gridTemplateColumns: "1fr", gap: "22px" } : {}),
+              }}
+            >
               <div style={styles.siteFooterColumn}>
                 <span style={styles.siteFooterColumnTitle}>Infos boutique</span>
                 <button type="button" style={styles.siteFooterLink} onClick={() => setActiveInfoPage("apropos")}>
@@ -1705,7 +1723,15 @@ export default function Shop({
               exit={{ y: 20, opacity: 0, scale: 0.98 }}
               style={{
                 ...styles.infoModal,
-                ...(isMobile ? { padding: "18px", maxWidth: "calc(100vw - 16px)", maxHeight: "calc(100vh - 16px)", overflowY: "auto" } : {}),
+                ...(isMobile
+                  ? {
+                      padding: "18px",
+                      maxWidth: "calc(100vw - 12px)",
+                      maxHeight: "calc(100dvh - 12px)",
+                      borderRadius: "22px",
+                      overflowY: "auto",
+                    }
+                  : {}),
               }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -1746,18 +1772,20 @@ export default function Shop({
             onClick={closeProduct}
           >
             <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.98 }}
+              initial={isMobile ? { opacity: 0, y: 32 } : { opacity: 0, y: 20, scale: 0.98 }}
+              animate={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0, scale: 1 }}
+              exit={isMobile ? { opacity: 0, y: 32 } : { opacity: 0, y: 20, scale: 0.98 }}
               style={{
                 ...styles.modalBox,
                 ...(isMobile
                   ? {
                       padding: "16px",
-                      borderRadius: "18px",
-                      maxWidth: "calc(100vw - 16px)",
-                      maxHeight: "calc(100vh - 16px)",
+                      borderRadius: "20px 20px 0 0",
+                      maxWidth: "100vw",
+                      width: "100vw",
+                      maxHeight: "92dvh",
                       overflowY: "auto",
+                      alignSelf: "flex-end",
                     }
                   : {}),
               }}
@@ -1905,30 +1933,38 @@ export default function Shop({
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {isCartOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+        <AnimatePresence>
+          {isCartOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             style={styles.cartOverlay}
             onClick={() => setIsCartOpen(false)}
-          >
-            <motion.aside
-              initial={{ x: 380 }}
-              animate={{ x: 0 }}
-              exit={{ x: 380 }}
-              transition={{ type: "spring", stiffness: 260, damping: 28 }}
-              style={{
-                ...styles.cartDrawer,
-                ...(isMobile
-                  ? {
+            >
+              <motion.aside
+                initial={isMobile ? { y: 48 } : { x: 380 }}
+                animate={isMobile ? { y: 0 } : { x: 0 }}
+                exit={isMobile ? { y: 48 } : { x: 380 }}
+                transition={{ type: "spring", stiffness: 260, damping: 28 }}
+                style={{
+                  ...styles.cartDrawer,
+                  ...(isMobile
+                    ? {
                       maxWidth: "100%",
+                      width: "100%",
+                      height: "92dvh",
+                      top: "auto",
+                      bottom: 0,
+                      right: 0,
+                      left: 0,
                       borderLeft: "none",
+                      borderTop: "1px solid rgba(230,188,168,0.62)",
+                      borderRadius: "22px 22px 0 0",
                       padding: "18px 16px 16px",
                     }
                   : {}),
-              }}
+                }}
               onClick={(e) => e.stopPropagation()}
             >
               <div style={styles.cartHeader}>
