@@ -1587,7 +1587,17 @@ export default function Shop({
           <footer
             style={{
               ...styles.siteFooter,
-              ...(isMobile ? { gridTemplateColumns: "1fr", padding: "24px 20px" } : {}),
+              ...(isMobile
+                ? {
+                    gridTemplateColumns: "1fr",
+                    padding: "30px 20px 34px",
+                    minHeight: "auto",
+                    gap: "26px",
+                    width: "calc(100vw - 16px)",
+                    marginLeft: "calc(50% - 50vw + 8px)",
+                    borderRadius: "28px 28px 0 0",
+                  }
+                : {}),
             }}
           >
             <div style={styles.siteFooterBrand}>
@@ -3740,9 +3750,13 @@ const styles = {
       marginTop: "22px",
       display: "grid",
       gridTemplateColumns: "1.3fr 1fr",
-      gap: "28px",
-      padding: "28px",
-      borderRadius: "28px",
+      gap: "40px",
+      width: "calc(100vw - 32px)",
+      marginLeft: "calc(50% - 50vw + 16px)",
+      padding: "44px 56px",
+      minHeight: "320px",
+      alignItems: "stretch",
+      borderRadius: "32px 32px 0 0",
       background:
         "linear-gradient(135deg, rgba(39,35,47,0.96) 0%, rgba(85,56,57,0.93) 52%, rgba(205,110,90,0.88) 100%)",
       color: "#fff7f2",
@@ -3751,8 +3765,8 @@ const styles = {
     },
     siteFooterBrand: {
       display: "grid",
-      gap: "10px",
-      alignContent: "start",
+      gap: "14px",
+      alignContent: "space-between",
     },
     siteFooterEyebrow: {
       fontSize: "12px",
@@ -3763,7 +3777,7 @@ const styles = {
     },
     siteFooterTitle: {
       margin: 0,
-      fontSize: "30px",
+      fontSize: "42px",
       lineHeight: 1.15,
       color: "#fffaf7",
       fontFamily: "Georgia, 'Times New Roman', serif",
@@ -3771,18 +3785,20 @@ const styles = {
     siteFooterText: {
       margin: 0,
       color: "rgba(255,240,232,0.84)",
-      lineHeight: 1.8,
-      maxWidth: "560px",
+      lineHeight: 1.9,
+      maxWidth: "720px",
+      fontSize: "18px",
     },
     siteFooterLinks: {
       display: "grid",
       gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-      gap: "18px",
+      gap: "28px",
+      alignContent: "space-between",
     },
     siteFooterColumn: {
       display: "grid",
       alignContent: "start",
-      gap: "10px",
+      gap: "14px",
     },
     siteFooterColumnTitle: {
       fontSize: "13px",
