@@ -7,17 +7,25 @@ Route::get('/media/{path}', function (string $path) {
         abort(404);
     }
 
-    $mediaRoot = trim((string) env('MEDIA_ROOT', env('FILESYSTEM_PUBLIC_ROOT', '')));
+    $relativePath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, ltrim($path, '/'));
+    $candidateRoots = array_values(array_filter([
+        trim((string) env('MEDIA_ROOT', env('FILESYSTEM_PUBLIC_ROOT', ''))),
+        '/data/media',
+        public_path('media'),
+    ]));
 
-    if ($mediaRoot === '') {
-        $mediaRoot = is_dir('/data') || str_starts_with(PHP_OS_FAMILY, 'Linux')
-            ? '/data/media'
-            : public_path('media');
+    $fullPath = null;
+
+    foreach ($candidateRoots as $candidateRoot) {
+        $candidatePath = rtrim($candidateRoot, "\\/") . DIRECTORY_SEPARATOR . $relativePath;
+
+        if (is_file($candidatePath)) {
+            $fullPath = $candidatePath;
+            break;
+        }
     }
 
-    $fullPath = rtrim($mediaRoot, "\\/") . DIRECTORY_SEPARATOR . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, ltrim($path, '/'));
-
-    if (!is_file($fullPath)) {
+    if ($fullPath === null) {
         abort(404);
     }
 
