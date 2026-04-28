@@ -1300,11 +1300,7 @@ export default function Shop({
                   ...(isMobile ? { width: "100%", justifyContent: "space-between" } : {}),
                 }}
               >
-                <span>
-                  {activeFiltersCount > 0
-                    ? `${activeFiltersCount} filtre(s) actif(s)`
-                    : "Tous les produits sont visibles"}
-                </span>
+                {activeFiltersCount > 0 ? <span>{`${activeFiltersCount} filtre(s) actif(s)`}</span> : <span />}
                 <button type="button" style={styles.filtersResetButton} onClick={resetCatalogFilters}>
                   Reinitialiser
                 </button>
