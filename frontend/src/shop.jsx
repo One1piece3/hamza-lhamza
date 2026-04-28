@@ -1015,6 +1015,7 @@ export default function Shop({
                       justifyContent: "flex-start",
                       flexWrap: "nowrap",
                       overflowX: "auto",
+                      WebkitOverflowScrolling: "touch",
                       paddingBottom: "4px",
                       gap: "8px",
                     }
@@ -1534,7 +1535,7 @@ export default function Shop({
                   <div
                     style={{
                       ...styles.productImageWrap,
-                      ...(isMobile ? { height: isPhone ? "240px" : "280px" } : {}),
+                      ...(isMobile ? { height: isPhone ? "260px" : "280px" } : {}),
                     }}
                   >
                     {imageUrl ? (
@@ -1649,9 +1650,9 @@ export default function Shop({
                     padding: "30px 20px 34px",
                     minHeight: "auto",
                     gap: "26px",
-                    width: "100vw",
-                    marginLeft: "calc(50% - 50vw)",
-                    marginBottom: "-40px",
+                    width: "calc(100% + 20px)",
+                    marginLeft: "-10px",
+                    marginBottom: 0,
                     borderRadius: 0,
                   }
                 : {}),
@@ -1726,10 +1727,12 @@ export default function Shop({
                 ...(isMobile
                   ? {
                       padding: "18px",
+                      width: "calc(100vw - 12px)",
                       maxWidth: "calc(100vw - 12px)",
-                      maxHeight: "calc(100dvh - 12px)",
+                      maxHeight: "88dvh",
                       borderRadius: "22px",
                       overflowY: "auto",
+                      WebkitOverflowScrolling: "touch",
                     }
                   : {}),
               }}
@@ -1962,6 +1965,8 @@ export default function Shop({
                       borderTop: "1px solid rgba(230,188,168,0.62)",
                       borderRadius: "22px 22px 0 0",
                       padding: "18px 16px 16px",
+                      overflowY: "auto",
+                      WebkitOverflowScrolling: "touch",
                     }
                   : {}),
                 }}
@@ -2309,6 +2314,7 @@ const styles = {
   container: {
     maxWidth: "1520px",
     margin: "0 auto",
+    width: "100%",
   },
   header: {
     background: "rgba(255,255,255,0.86)",
@@ -3169,6 +3175,8 @@ const styles = {
     width: "100%",
     height: "100%",
     objectFit: "cover",
+    display: "block",
+    objectPosition: "center center",
   },
   noImage: {
     width: "100%",
@@ -3371,6 +3379,8 @@ const styles = {
     width: "100%",
     height: "100%",
     objectFit: "cover",
+    display: "block",
+    objectPosition: "center center",
   },
   detailNoImage: {
     width: "100%",
@@ -3455,6 +3465,7 @@ const styles = {
       "linear-gradient(90deg, rgba(34,26,24,0.12) 0%, rgba(34,26,24,0.28) 35%, rgba(34,26,24,0.46) 100%)",
     backdropFilter: "blur(8px)",
     zIndex: 1100,
+    overflow: "hidden",
   },
   cartDrawer: {
     position: "absolute",
@@ -3523,6 +3534,7 @@ const styles = {
     flex: 1,
     minHeight: 0,
     overflowY: "auto",
+    WebkitOverflowScrolling: "touch",
     display: "flex",
     flexDirection: "column",
     gap: "16px",
@@ -3784,18 +3796,18 @@ const styles = {
     flexDirection: "column",
     gap: "12px",
   },
-    siteFooter: {
-      marginTop: "22px",
-      display: "grid",
-      gridTemplateColumns: "1.3fr 1fr",
-      gap: "40px",
-      width: "100vw",
-      marginLeft: "calc(50% - 50vw)",
-      marginBottom: "-40px",
-      padding: "44px 56px",
-      minHeight: "320px",
-      alignItems: "stretch",
-      borderRadius: 0,
+      siteFooter: {
+        marginTop: "22px",
+        display: "grid",
+        gridTemplateColumns: "1.3fr 1fr",
+        gap: "40px",
+        width: "100vw",
+        marginLeft: "calc(50% - 50vw)",
+        marginBottom: 0,
+        padding: "44px 56px",
+        minHeight: "320px",
+        alignItems: "stretch",
+        borderRadius: 0,
       background:
         "linear-gradient(135deg, rgba(39,35,47,0.96) 0%, rgba(85,56,57,0.93) 52%, rgba(205,110,90,0.88) 100%)",
       color: "#fff7f2",
