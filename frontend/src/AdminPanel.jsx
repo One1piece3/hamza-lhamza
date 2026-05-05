@@ -25,7 +25,12 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { getAdminAuthHeaders } from "./adminSession";
-import { API_URL, getApiErrorMessage, getStorageUrl } from "./api";
+import {
+  API_URL,
+  getApiErrorMessage,
+  getStorageUrl,
+  normalizeProduct,
+} from "./api";
 
 const PRODUCTS_API_URL = `${API_URL}/products`;
 const ORDERS_API_URL = `${API_URL}/orders`;
@@ -110,7 +115,7 @@ export default function AdminPanel({ onLogout, onGoToShop, onSessionExpired }) {
       setLoading(true);
       setProductError("");
       const response = await axios.get(PRODUCTS_API_URL);
-      setProducts(response.data);
+      setProducts(Array.isArray(response.data) ? response.data.map(normalizeProduct) : []);
     } catch (error) {
       console.error("Erreur chargement produits :", error);
       const nextMessage = getApiErrorMessage(error, "Erreur lors du chargement des produits");

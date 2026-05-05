@@ -39,6 +39,36 @@ export function getStorageUrl(path) {
   return `${STORAGE_URL}/${cleanPath}`;
 }
 
+export function getProductImages(product) {
+  const relationImages = Array.isArray(product?.images)
+    ? product.images.filter((image) => image?.image_path)
+    : [];
+
+  if (relationImages.length > 0) {
+    return relationImages;
+  }
+
+  const legacyImagePath = String(product?.image || "").trim();
+
+  if (!legacyImagePath) {
+    return [];
+  }
+
+  return [
+    {
+      image_path: legacyImagePath,
+      is_main: true,
+    },
+  ];
+}
+
+export function normalizeProduct(product) {
+  return {
+    ...product,
+    images: getProductImages(product),
+  };
+}
+
 export function isNetworkError(error) {
   return !error?.response && Boolean(error?.message);
 }

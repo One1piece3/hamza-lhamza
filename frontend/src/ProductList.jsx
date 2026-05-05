@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { API_URL, getStorageUrl } from "./api";
+import { API_URL, getStorageUrl, normalizeProduct } from "./api";
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
@@ -12,7 +12,7 @@ export default function ProductList() {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(`${API_URL}/products`);
-      setProducts(response.data);
+      setProducts(Array.isArray(response.data) ? response.data.map(normalizeProduct) : []);
     } catch (error) {
       console.error("Erreur lors du chargement des produits :", error);
     }

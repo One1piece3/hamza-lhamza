@@ -12,6 +12,8 @@ Route::get('/media/{path}', function (string $path) {
         trim((string) env('MEDIA_ROOT', env('FILESYSTEM_PUBLIC_ROOT', ''))),
         '/data/media',
         public_path('media'),
+        public_path('storage'),
+        storage_path('app/public'),
     ]));
 
     $fullPath = null;
